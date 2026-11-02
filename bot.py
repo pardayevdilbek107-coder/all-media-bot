@@ -1,4 +1,22 @@
 import os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+
+# Render port talab qilgani uchun kichik fon serveri
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is running!")
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server.serve_forever()
+
+# Fon rejimida serverni ishga tushirish
+threading.Thread(target=run_web_server, daemon=True).start()
+import os
 import logging
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
